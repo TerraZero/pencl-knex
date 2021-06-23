@@ -1,0 +1,26 @@
+{
+  "name": "pencl-knex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TerraZero/pencl-knex.git"
+  },
+  "author": "TerraZero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TerraZero/pencl-knex/issues"
+  },
+  "homepage": "https://github.com/TerraZero/pencl-knex#readme",
+  "dependencies": {
+    "knex": "^0.95.6",
+    "sqlite": "^4.0.23"
+  },
+  "peerDependencies": {
+    "pencl-core": "git+https://github.com/TerraZero/pencl-core.git"
+  }
+}
