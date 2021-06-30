@@ -1,4 +1,3 @@
-const Core = require('pencl-core');
 const Knex = require('knex');
 const PenclPlugin = require('pencl-core/src/Boot/PenclPlugin');
 
@@ -21,7 +20,7 @@ class PenclKnex extends PenclPlugin {
     this._connections = {};
     this._env = this.config.env;
 
-    this.config.data = require(Core().boot.getPath(this.config.file));
+    this.config.data = require(this.boot.getPath(this.config.file));
   }
 
   /** @returns {Knex} */
