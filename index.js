@@ -35,4 +35,9 @@ class PenclKnex extends PenclPlugin {
 
 }
 
-module.exports = new PenclKnex();
+module.exports = function() {
+  if (this._instance === undefined) {
+    this._instance = new PenclKnex();
+  }
+  return this._instance;
+}
