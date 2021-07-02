@@ -65,7 +65,7 @@ module.exports = class SchemaManager {
     }
 
 
-    const name = Reflection.replaceObject(this.plugin.config.schemas[type], placeholders);
+    const name = Reflection.replaceObject(this.plugin.config.schemas[type], placeholders, '');
     const file = Path.join(this.plugin.boot.getPath(this.plugin.config.schema), name);
 
     FileUtil.prepareDir(this.plugin.boot.root, file);
