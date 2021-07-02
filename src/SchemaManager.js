@@ -5,6 +5,7 @@ const FS = require('fs');
 const Schema = require('./Schema');
 const Reflection = require('pencl-kit/src/Util/Reflection');
 const Regex = require('pencl-kit/src/Util/Regex');
+const FileUtil = require('pencl-kit/src/Util/FileUtil');
 
 module.exports = class SchemaManager {
 
@@ -63,9 +64,11 @@ module.exports = class SchemaManager {
       }
     }
 
+
     const name = Reflection.replaceObject(this.plugin.config.schemas[type], placeholders);
     const file = Path.join(this.plugin.boot.getPath(this.plugin.config.schema), name);
 
+    FileUtil.prepareDir(this.plugin.boot.root, file);
     FS.writeFileSync(file, JSON.stringify(schema));
   }
 
