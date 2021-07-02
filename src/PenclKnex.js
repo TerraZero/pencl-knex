@@ -1,6 +1,7 @@
 const Knex = require('knex');
 
 const PenclPlugin = require('pencl-core/src/Boot/PenclPlugin');
+const SchemaManager = require('./SchemaManager');
 
 module.exports = class PenclKnex extends PenclPlugin {
 
@@ -26,8 +27,17 @@ module.exports = class PenclKnex extends PenclPlugin {
     super();
     this._connections = {};
     this._env = this.config.env;
+    this._schemas = null;
 
     this.config.data = require(this.boot.getPath(this.config.file));
+  }
+
+  /** @returns {SchemaManager} */
+  get schemas() {
+    if (this._schemas === null) {
+      this._schemas = new SchemaManager(this);
+    }
+    return this._schemas;
   }
 
   /** @returns {Knex} */
