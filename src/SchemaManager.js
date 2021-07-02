@@ -4,6 +4,7 @@ const FS = require('fs');
 
 const Schema = require('./Schema');
 const Reflection = require('pencl-kit/src/Util/Reflection');
+const Regex = require('pencl-kit/src/Util/Regex');
 
 module.exports = class SchemaManager {
 
@@ -58,7 +59,7 @@ module.exports = class SchemaManager {
     const placeholders = {};
     for (const field in schema) {
       if (typeof schema[field] !== 'object') {
-        placeholders['[' + field + ']'] = schema[field];
+        placeholders[Regex.escape('[' + field + ']')] = schema[field];
       }
     }
 
