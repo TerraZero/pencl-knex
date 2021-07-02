@@ -17,10 +17,12 @@
   },
   "homepage": "https://github.com/TerraZero/pencl-knex#readme",
   "dependencies": {
+    "glob": "^7.1.7",
     "knex": "^0.95.6",
     "sqlite3": "^4.2.0"
   },
   "peerDependencies": {
-    "pencl-core": "git+https://github.com/TerraZero/pencl-core.git"
+    "pencl-core": "git+https://github.com/TerraZero/pencl-core.git",
+    "pencl-kit": "git+https://github.com/TerraZero/pencl-kit.git"
   }
 }
