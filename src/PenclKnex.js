@@ -76,13 +76,4 @@ module.exports = class PenclKnex extends PenclPlugin {
     return answer;
   }
 
-  /**
-   * @param {string} table 
-   * @param {int} id 
-   * @param {string[]} fields
-   */
-  async load(table, id, fields = []) {
-    
-  }
-
 }
