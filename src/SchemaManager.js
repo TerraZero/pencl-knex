@@ -4,8 +4,8 @@ const FS = require('fs');
 
 const Schema = require('./Schema');
 const Reflection = require('pencl-kit/src/Util/Reflection');
-const Regex = require('pencl-kit/src/Util/Regex');
 const FileUtil = require('pencl-kit/src/Util/FileUtil');
+const ErrorCollector = require('pencl-kit/src/Error/ErrorCollector');
 
 module.exports = class SchemaManager {
 
@@ -15,19 +15,21 @@ module.exports = class SchemaManager {
   constructor(plugin) {
     this.plugin = plugin;
     this._schemas = null;
+    this._entitytypes = {};
+    this._fieldtypes = {};
   }
 
-  /** @returns {Schema[]} */
+  /** @returns {Object<string, Schema>} */
   get schemas() {
     if (this._schemas === null) {
       this._schemas = {};
 
-      const files = Glob.sync(this.plugin.config.schemapattern, {
-        cwd: this.plugin.boot.getPath(this.plugin.config.schema), 
+      const files = Glob.sync(this.plugin.config.schema.pattern, {
+        cwd: this.plugin.boot.getPath(this.plugin.config.schema.path),
         absolute: true,
       });
       for (const file of files) {
-        const schema = new Schema(file, Path.basename(file), require(file));
+        const schema = new Schema(require(file));
 
         this._schemas[schema.name] = schema;
       }
@@ -35,41 +37,195 @@ module.exports = class SchemaManager {
     return this._schemas;
   }
 
+  /**
+   * @param {typeof import('./FieldType/FieldTypeBase')} fieldtype 
+   */
+  addFieldType(fieldtype) {
+    this._fieldtypes[fieldtype.type] = fieldtype;
+  }
+
+  /**
+   * @param {string} type 
+   * @returns {typeof import('./FieldType/FieldTypeBase')}
+   */
+  getFieldType(type) {
+    return this._fieldtypes[type] || null;
+  }
+
+  /**
+   * @param {typeof import('./EntityType/EntityTypeBase')} entitytype 
+   */
+  addEntityType(entitytype) {
+    this._entitytypes[entitytype.type] = entitytype;
+  }
+
+  /**
+   * @param {string} type 
+   * @returns {typeof import('./EntityType/EntityTypeBase')}
+   */
+  getEntityType(type) {
+    return this._entitytypes[type] || null;
+  }
+
+  /**
+   * @param {string} type
+   * @param {string} name 
+   * @returns {Schema}
+   */
+  getSchema(type, name) {
+    return this.schemas['schema.' + type + '.' + name];
+  }
+
+  getEntities() {
+    const entities = [];
+
+    for (const name in this.schemas) {
+      if (this.schemas[name].type === 'entity') {
+        entities.push(this.schemas[name]);
+      }
+    }
+    return entities;
+  }
+
+  /**
+   * @param {string} entity entity name
+   * @param {string} bundle bundle name
+   * @param {Object} config bundle config
+   * @param {Object<string, Object>} fields field instances config
+   */
   createEntity(entity, bundle, config, fields) {
+    for (const field in fields) {
+      fields[field] = Reflection.merge(this.getFieldType(this.getSchema('field', field).get('type')).defaultInstanceConfig(), fields[field]);
+    }
+
     const schema = {
       entity,
       bundle,
-      config,
+      config: Reflection.merge(this.getEntityType(entity).defaultConfig(), config),
       fields,
     };
-
     this.createSchema('entity', schema);
   }
 
-  createField(field, type, config) {
+  /**
+   * @param {string} field field name
+   * @param {string} type field type
+   * @param {Object} config field config
+   */
+  createField(field, type, config = {}) {
+    const collector = new ErrorCollector();
     const schema = {
       field,
       type,
-      config,
+      config: Reflection.mergeValid(this.getFieldType(type).defaultConfig(), (valid, object, field) => {
+        collector.error('The config "' + field + '" on field type "' + type + '" is not permitted.');
+      }, config),
     };
 
+    collector.throwErrors();
     this.createSchema('field', schema);
   }
 
   createSchema(type, schema) {
-    const placeholders = {};
-    for (const field in schema) {
-      if (typeof schema[field] !== 'object') {
-        placeholders[Regex.escape('[' + field + ']')] = schema[field];
-      }
+    const collector = new ErrorCollector();
+
+    collector.collect(() => {
+      const s = new Schema(schema);
+      s.set('_type', type);
+      s.set('_name', Path.parse(Reflection.replaceObject(this.plugin.config.schema.types[type], s.placeholders, '')).name);
+      this.saveSchema(s);
+    });
+
+    collector.logWarnings();
+    collector.throwErrors();
+  }
+
+  /**
+   * @param {Schema} schema 
+   */
+  saveSchema(schema) {
+    if (!schema.get('_type') || !schema.get('_name')) {
+      throw new Error('Schema has no required "_type" or "_name" value');
     }
 
-
-    const name = Reflection.replaceObject(this.plugin.config.schemas[type], placeholders, '');
-    const file = Path.join(this.plugin.boot.getPath(this.plugin.config.schema), name);
+    const path = Reflection.replaceObject(this.plugin.config.schema.types[schema.type], schema.placeholders, '');
+    const file = Path.join(this.plugin.boot.getPath(this.plugin.config.schema.path), path);
 
     FileUtil.prepareDir(this.plugin.boot.root, file);
-    FS.writeFileSync(file, JSON.stringify(schema));
+    FS.writeFileSync(file, JSON.stringify(schema.schema, null, '  '));
+    this.schemas[schema.name] = schema;
+  }
+
+  /**
+   * @param {string} entity 
+   * @param {string} bundle 
+   * @returns {import('./EntityType/EntityTypeBase')}
+   */
+  getEntity(entity, bundle) {
+    const entityschema = this.getSchema('entity', entity + '.' + bundle);
+
+    return new (this.getEntityType(entityschema.get('entity')))(entityschema);
+  }
+
+  /**
+   * @param {string} entity 
+   * @param {string} bundle
+   * @param {string} field 
+   * @returns {import('./FieldType/FieldTypeBase')}
+   */
+  getField(entity, bundle, field) {
+    const entityschema = this.getSchema('entity', entity + '.' + bundle);
+    const fieldschema = this.getSchema('field', field);
+
+    return new (this.getFieldType(fieldschema.get('type')))(entityschema, fieldschema);
+  }
+
+  async dbCreate(knex) {
+    for (const schema of this.getEntities()) {
+      const entity = this.getEntity(schema.get('entity'), schema.get('bundle'));
+
+      await this.dbCreateEntity(knex, entity);
+    }
+  }
+
+  async dbDrop(knex) {
+    for (const schema of this.getEntities()) {
+      const entity = this.getEntity(schema.get('entity'), schema.get('bundle'));
+
+      await knex.schema.dropTableIfExists(entity.table);
+
+      for (const fieldname of entity.getFields()) {
+        const field = this.getField(entity.entity, entity.bundle, fieldname);
+
+        await knex.schema.dropTableIfExists(field.table);
+      }
+    }
+  }
+
+  /**
+   * @param {import('knex')} knex 
+   * @param {import('./EntityType/EntityTypeBase')} entity 
+   * @returns {Promise}
+   */
+  async dbCreateEntity(knex, entity) {
+    const entitytype = this.getEntityType(entity.entity);
+
+    await entitytype.dbCreate(knex, entity);
+
+    for (const fieldname of entity.getFields()) {
+      const field = this.getField(entity.entity, entity.bundle, fieldname);
+      
+      await this.dbCreateField(knex, field);
+    }
+  }
+
+  /**
+   * @param {import('knex')} knex 
+   * @param {import('./FieldType/FieldTypeBase')} field 
+   * @returns {Promise}
+   */
+  async dbCreateField(knex, field) {
+    await this.getFieldType(field.type).dbCreate(knex, field);
   }
 
 }

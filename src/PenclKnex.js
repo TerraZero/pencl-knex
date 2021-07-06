@@ -2,6 +2,7 @@ const Knex = require('knex');
 
 const PenclPlugin = require('pencl-core/src/Boot/PenclPlugin');
 const SchemaManager = require('./SchemaManager');
+const Storage = require('./Storage');
 
 module.exports = class PenclKnex extends PenclPlugin {
 
@@ -14,11 +15,13 @@ module.exports = class PenclKnex extends PenclPlugin {
       data: null,
       env: 'development',
       file: '~/knexfile.js',
-      schema: '~/schema',
-      schemapattern: '**/schema.*.json',
-      schemas: {
-        entity: 'entity/schema.[entity].[bundle].json',
-        field: 'fields/schema.[field].json',
+      schema: {
+        path: '~/schema',
+        pattern: '**/schema.*.json',
+        types: {
+          entity: 'entity/schema.entity.[entity].[bundle].json',
+          field: 'fields/schema.field.[field].json',
+        },
       },
     };
   }
@@ -28,14 +31,19 @@ module.exports = class PenclKnex extends PenclPlugin {
     this._connections = {};
     this._env = this.config.env;
     this._schemas = null;
+    this.storage = new Storage(this);
 
     this.config.data = require(this.boot.getPath(this.config.file));
   }
 
-  /** @returns {SchemaManager} */
   get schemas() {
     if (this._schemas === null) {
       this._schemas = new SchemaManager(this);
+      this._schemas.addEntityType(require('./EntityType/NodeEntityType'));
+      this._schemas.addEntityType(require('./EntityType/ItemEntityType'));
+      this._schemas.addFieldType(require('./FieldType/StringFieldType'));
+      this._schemas.addFieldType(require('./FieldType/ReferenceFieldType'));
+      this.boot.triggerSync('knex.init.schema', this, this._schemas);
     }
     return this._schemas;
   }
