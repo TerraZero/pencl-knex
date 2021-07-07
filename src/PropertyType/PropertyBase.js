@@ -1,3 +1,4 @@
+const PenclMethodDefinitionError = require('pencl-kit/src/Error/PenclMethodDefinitionError');
 const SchemaError = require('../Error/SchemaError');
 
 module.exports = class PropertyBase {
@@ -16,7 +17,7 @@ module.exports = class PropertyBase {
    * @param {import('knex')} table
    */
   static dbCreateField(property, table) {
-    throw new SchemaError('No property field defined.', this);
+    throw new PenclMethodDefinitionError(this, 'dbCreateField');
   }
 
   constructor(name, config = {}) {

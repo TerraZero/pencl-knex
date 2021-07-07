@@ -1,5 +1,6 @@
 const FieldError = require('../Error/FieldError');
 const SchemaError = require('../Error/SchemaError');
+const PenclMethodDefinitionError = require('pencl-kit/src/Error/PenclMethodDefinitionError');
 
 module.exports = class FieldTypeBase {
 
@@ -103,7 +104,7 @@ module.exports = class FieldTypeBase {
    * @returns {Object<string, import('../PropertyType/PropertyBase')>}
    */
   static properties(field, props) {
-    throw new SchemaError('Properties must be defined for field.', this);
+    throw new PenclMethodDefinitionError(this, 'properties');
   }
 
   static get defaultProperty() {
