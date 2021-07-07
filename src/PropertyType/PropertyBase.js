@@ -1,5 +1,4 @@
 const PenclMethodDefinitionError = require('pencl-kit/src/Error/PenclMethodDefinitionError');
-const SchemaError = require('../Error/SchemaError');
 
 module.exports = class PropertyBase {
 

@@ -1,6 +1,6 @@
 const FieldError = require('../Error/FieldError');
-const SchemaError = require('../Error/SchemaError');
-const PenclMethodDefinitionError = require('pencl-kit/src/Error/PenclMethodDefinitionError');
+const PenclMethodDefinitionError = require('pencl-kit/src/Error/Definition/PenclMethodDefinitionError');
+const PenclGetterDefinitionError = require('pencl-kit/src/Error/Definition/PenclGetterDefinitionError');
 
 module.exports = class FieldTypeBase {
 
@@ -8,7 +8,7 @@ module.exports = class FieldTypeBase {
 
   /** @returns {string} */
   static get type() {
-    throw new SchemaError('Field type must be defined. (static get type(): string)', this);
+    throw new PenclGetterDefinitionError(this, 'type');
   }
 
   /**

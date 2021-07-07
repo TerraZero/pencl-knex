@@ -1,4 +1,4 @@
-const SchemaError = require('../Error/SchemaError');
+const PenclGetterDefinitionError = require('pencl-kit/src/Error/Definition/PenclGetterDefinitionError');
 const StringProperty = require('../PropertyType/StringProperty');
 
 const Knex = require('../../index')();
@@ -7,7 +7,7 @@ module.exports = class EntityTypeBase {
 
   /** @returns {string} */
   static get type() {
-    throw new SchemaError('Entity type must be defined. (static get type(): string)', this);
+    throw new PenclGetterDefinitionError(this, 'type');
   }
 
   static get table() {
