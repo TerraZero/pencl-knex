@@ -1,4 +1,4 @@
-const PenclMethodDefinitionError = require('pencl-kit/src/Error/PenclMethodDefinitionError');
+const PenclMethodDefinitionError = require('pencl-kit/src/Error/Definition/PenclMethodDefinitionError');
 
 module.exports = class PropertyBase {
 
