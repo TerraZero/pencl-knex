@@ -36,6 +36,7 @@ module.exports = class PenclKnex extends PenclPlugin {
     this.config.data = require(this.boot.getPath(this.config.file));
   }
 
+  /** @returns {SchemaManager} */
   get schemas() {
     if (this._schemas === null) {
       this._schemas = new SchemaManager(this);
