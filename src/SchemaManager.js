@@ -6,6 +6,7 @@ const Schema = require('./Schema');
 const Reflection = require('pencl-kit/src/Util/Reflection');
 const FileUtil = require('pencl-kit/src/Util/FileUtil');
 const ErrorCollector = require('pencl-kit/src/Error/ErrorCollector');
+const SchemaError = require('./Error/SchemaError');
 
 module.exports = class SchemaManager {
 
@@ -94,6 +95,11 @@ module.exports = class SchemaManager {
    * @param {Object<string, Object>} fields field instances config
    */
   createEntity(entity, bundle, config, fields) {
+    const schema = this.getSchema('entity', entity + '.' + bundle);
+    if (schema !== undefined) {
+      throw new SchemaError('The entity schema "' + entity + '.' + bundle + '" exists already.');
+    }
+
     for (const field in fields) {
       fields[field] = Reflection.merge(this.getFieldType(this.getSchema('field', field).get('type')).defaultInstanceConfig(), fields[field]);
     }
@@ -108,11 +114,31 @@ module.exports = class SchemaManager {
   }
 
   /**
+   * Update an existing entity schema, with a field instance.
+   * 
+   * @param {Schema} entityschema 
+   * @param {string} field fieldname
+   * @param {Object} config 
+   */
+  createEntityField(entityschema, field, config = {}) {
+    config = Reflection.merge(this.getFieldType(this.getSchema('field', field).get('type')).defaultInstanceConfig(), config);
+    const schema = entityschema.schema;
+    schema.fields[field] = config;
+    this.createSchema('entity', schema);
+  }
+
+  /**
    * @param {string} field field name
    * @param {string} type field type
    * @param {Object} config field config
    */
   createField(field, type, config = {}) {
+    const schema = this.getSchema('field', field);
+
+    if (schema !== undefined) {
+      throw new SchemaError('The field schema "' + field + '" exists already.');
+    }
+
     const collector = new ErrorCollector();
     const schema = {
       field,
@@ -164,6 +190,9 @@ module.exports = class SchemaManager {
   getEntity(entity, bundle) {
     const entityschema = this.getSchema('entity', entity + '.' + bundle);
 
+    if (!entityschema) {
+      throw new SchemaError('The entity schema "' + entity + '.' + bundle + '" does not exist');
+    }
     return new (this.getEntityType(entityschema.get('entity')))(entityschema);
   }
 
