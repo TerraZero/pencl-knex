@@ -153,14 +153,19 @@ module.exports = class SchemaManager {
     };
 
     collector.throwErrors();
-    this.createSchema('field', schema);
+    return this.createSchema('field', schema);
   }
 
+  /**
+   * @param {string} type 
+   * @param {Object} schema 
+   * @returns {Schema}
+   */
   createSchema(type, schema) {
     const collector = new ErrorCollector();
+    const s = new Schema(schema);
 
     collector.collect(() => {
-      const s = new Schema(schema);
       s.set('_type', type);
       s.set('_name', Path.parse(Reflection.replaceObject(this.plugin.config.schema.types[type], s.placeholders, '')).name);
       this.saveSchema(s);
@@ -168,6 +173,7 @@ module.exports = class SchemaManager {
 
     collector.logWarnings();
     collector.throwErrors();
+    return s;
   }
 
   /**
@@ -248,17 +254,17 @@ module.exports = class SchemaManager {
     for (const fieldname of entity.getFields()) {
       const field = this.getField(entity.entity, entity.bundle, fieldname);
       
-      await this.dbCreateField(knex, field);
+      await this.dbCreateField(knex, field.fieldschema);
     }
   }
 
   /**
    * @param {import('knex')} knex 
-   * @param {import('./FieldType/FieldTypeBase')} field 
+   * @param {Schema} fieldschema 
    * @returns {Promise}
    */
-  async dbCreateField(knex, field) {
-    await this.getFieldType(field.type).dbCreate(knex, field);
+  async dbCreateField(knex, fieldschema) {
+    await this.getFieldType(fieldschema.get('type')).dbCreate(knex, fieldschema);
   }
 
 }
