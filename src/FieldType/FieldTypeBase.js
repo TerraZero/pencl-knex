@@ -36,7 +36,7 @@ module.exports = class FieldTypeBase {
   static dbCreateTable(knex, fieldschema) {
     return knex.schema.hasTable(this.dbTableName(fieldschema)).then((exists) => {
       if (!exists) {
-        return knex.schema.createTable(field.table, (table) => {
+        return knex.schema.createTable(this.dbTableName(fieldschema), (table) => {
           table.string('entity');
           table.string('id');
           table.integer('delta');
@@ -55,7 +55,7 @@ module.exports = class FieldTypeBase {
     const props = {};
     this.properties(fieldschema, props);
     for (const prop in props) {
-      field.props[prop].dbCreateField(table);
+      props[prop].dbCreateField(table);
     }
   }
 
