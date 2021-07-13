@@ -23,11 +23,12 @@ module.exports = class ListFieldType extends StringFieldType {
   }
 
   /**
-   * @param {FieldTypeBase} field
+   * @param {import('../Schema')} fieldschema
+   * @param {Object<string, import('../PropertyType/PropertyBase')>} props
    * @returns {Object<string, import('../PropertyType/PropertyBase')>}
    */
-  static properties(field, props) {
-    props.value = StringProperty.create('value').length(field.fieldconfig.length);
+  static properties(fieldschema, props) {
+    props.value = StringProperty.create('value').length(fieldschema.get('config').length);
   }
 
   /**

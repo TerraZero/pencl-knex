@@ -23,10 +23,11 @@ module.exports = class ReferenceFieldType extends FieldTypeBase {
   }
 
   /**
-   * @param {FieldTypeBase} field
+   * @param {import('../Schema')} fieldschema
+   * @param {Object<string, import('../PropertyType/PropertyBase')>} props
    * @returns {Object<string, import('../PropertyType/PropertyBase')>}
    */
-  static properties(field, props) {
+  static properties(fieldschema, props) {
     props.entity = StringProperty.create('entity').setDBField('ref_entity').length(255);
     props.id = IntegerProperty.create('id').setDBField('ref_id');
   }

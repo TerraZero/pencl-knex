@@ -12,28 +12,36 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {import('knex')} knex 
-   * @param {FieldTypeBase} field 
-   * @returns {Promise}
+   * @param {import('../Schema')} fieldschema 
+   * @returns {string}
    */
-  static dbCreate(knex, field) {
-    return this.dbTable(knex, field);
+  static dbTableName(fieldschema) {
+    return 'field__' + fieldschema.get('field');
   }
 
   /**
    * @param {import('knex')} knex 
-   * @param {FieldTypeBase} field 
+   * @param {import('../Schema')} fieldschema 
    * @returns {Promise}
    */
-  static dbTable(knex, field) {
-    return knex.schema.hasTable(field.table).then((exists) => {
+  static dbCreate(knex, fieldschema) {
+    return this.dbCreateTable(knex, fieldschema);
+  }
+
+  /**
+   * @param {import('knex')} knex 
+   * @param {import('../Schema')} fieldschema 
+   * @returns {Promise}
+   */
+  static dbCreateTable(knex, fieldschema) {
+    return knex.schema.hasTable(this.dbTableName(fieldschema)).then((exists) => {
       if (!exists) {
         return knex.schema.createTable(field.table, (table) => {
           table.string('entity');
           table.string('id');
           table.integer('delta');
 
-          this.dbProperties(table, field);
+          this.dbCreateProperties(table, fieldschema);
         });
       }
     });
@@ -41,10 +49,12 @@ module.exports = class FieldTypeBase {
 
   /**
    * @param {import('knex')} table 
-   * @param {FieldTypeBase} field 
+   * @param {import('../Schema')} fieldschema 
    */
-  static dbProperties(table, field) {
-    for (const prop in field.props) {
+  static dbCreateProperties(table, fieldschema) {
+    const props = {};
+    this.properties(fieldschema, props);
+    for (const prop in props) {
       field.props[prop].dbCreateField(table);
     }
   }
@@ -100,10 +110,11 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {FieldTypeBase} field
+   * @param {import('../Schema')} fieldschema
+   * @param {Object<string, import('../PropertyType/PropertyBase')>} props
    * @returns {Object<string, import('../PropertyType/PropertyBase')>}
    */
-  static properties(field, props) {
+  static properties(fieldschema, props) {
     throw new PenclMethodDefinitionError(this, 'properties');
   }
 
@@ -147,7 +158,7 @@ module.exports = class FieldTypeBase {
 
   /** @returns {string} */
   get table() {
-    return 'field__' + this.fieldschema.get('field');
+    return this.definition.dbTableName(this.fieldschema);
   }
 
   /** @returns {import('../Schema')} */
