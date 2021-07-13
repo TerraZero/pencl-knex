@@ -93,6 +93,7 @@ module.exports = class SchemaManager {
    * @param {string} bundle bundle name
    * @param {Object} config bundle config
    * @param {Object<string, Object>} fields field instances config
+   * @returns {import('./EntityType/EntityTypeBase')}
    */
   createEntity(entity, bundle, config, fields) {
     const testschema = this.getSchema('entity', entity + '.' + bundle);
@@ -111,6 +112,7 @@ module.exports = class SchemaManager {
       fields,
     };
     this.createSchema('entity', schema);
+    return this.getEntity(entity, bundle);
   }
 
   /**
@@ -119,12 +121,14 @@ module.exports = class SchemaManager {
    * @param {Schema} entityschema 
    * @param {string} field fieldname
    * @param {Object} config 
+   * @returns {import('./FieldType/FieldTypeBase')}
    */
   createEntityField(entityschema, field, config = {}) {
     config = Reflection.merge(this.getFieldType(this.getSchema('field', field).get('type')).defaultInstanceConfig(), config);
     const schema = entityschema.schema;
     schema.fields[field] = config;
     this.createSchema('entity', schema);
+    return this.getField(entityschema.get('entity'), entityschema.get('bundle'), field);
   }
 
   /**
