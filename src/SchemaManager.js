@@ -95,8 +95,8 @@ module.exports = class SchemaManager {
    * @param {Object<string, Object>} fields field instances config
    */
   createEntity(entity, bundle, config, fields) {
-    const schema = this.getSchema('entity', entity + '.' + bundle);
-    if (schema !== undefined) {
+    const testschema = this.getSchema('entity', entity + '.' + bundle);
+    if (testschema !== undefined) {
       throw new SchemaError('The entity schema "' + entity + '.' + bundle + '" exists already.');
     }
 
@@ -133,9 +133,9 @@ module.exports = class SchemaManager {
    * @param {Object} config field config
    */
   createField(field, type, config = {}) {
-    const schema = this.getSchema('field', field);
+    const testschema = this.getSchema('field', field);
 
-    if (schema !== undefined) {
+    if (testschema !== undefined) {
       throw new SchemaError('The field schema "' + field + '" exists already.');
     }
 
