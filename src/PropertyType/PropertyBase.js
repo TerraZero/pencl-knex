@@ -1,6 +1,12 @@
+const PenclGetterDefinitionError = require('pencl-kit/src/Error/Definition/PenclGetterDefinitionError');
 const PenclMethodDefinitionError = require('pencl-kit/src/Error/Definition/PenclMethodDefinitionError');
 
 module.exports = class PropertyBase {
+
+  /** @returns {string} */
+  static type() {
+    throw new PenclGetterDefinitionError(this, 'type');
+  }
 
   /**
    * @param {string} name 
@@ -19,12 +25,22 @@ module.exports = class PropertyBase {
     throw new PenclMethodDefinitionError(this, 'dbCreateField');
   }
 
+  /**
+   * @param {string} name 
+   * @param {Object} config 
+   */
   constructor(name, config = {}) {
     this.name = name;
     this.config = config;
     this._dbField = name;
   }
 
+  /** @returns {string} */
+  get type() {
+    return this.definition.type;
+  }
+
+  /** @returns {string} */
   get dbField() {
     return this._dbField;
   }
@@ -34,6 +50,10 @@ module.exports = class PropertyBase {
     return this.constructor;
   }
 
+  /**
+   * @param {string} field 
+   * @returns {this}
+   */
   setDBField(field) {
     this._dbField = field;
     return this;

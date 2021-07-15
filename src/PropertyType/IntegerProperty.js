@@ -3,6 +3,11 @@ const PropertyBase = require('./PropertyBase');
 
 module.exports = class IntegerProperty extends PropertyBase {
 
+  /** @returns {string} */
+  static type() {
+    return 'integer';
+  }
+
   /**
    * @param {IntegerProperty} property
    * @param {import('knex')} table

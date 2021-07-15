@@ -4,6 +4,11 @@ const StringProperty = require('./StringProperty');
 
 module.exports = class ListProperty extends StringProperty {
 
+  /** @returns {string} */
+  static type() {
+    return 'list';
+  }
+
   /**
    * @param {StringProperty} property
    * @param {import('knex')} table
