@@ -20,6 +20,16 @@ module.exports = class Schema {
     return this.get('_name');
   }
 
+  /** @returns {Object} */
+  get data() {
+    const data = {};
+    for (const field in this.schema) {
+      if (field.startsWith('_')) continue;
+      data[field] = this.schema[field];
+    }
+    return data;
+  }
+
   get placeholders() {
     const placeholders = {};
     for (const field in this.schema) {
