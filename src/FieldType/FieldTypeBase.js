@@ -184,7 +184,7 @@ module.exports = class FieldTypeBase {
   }
 
   get label() {
-    return this.fieldschema.get('label');
+    return this.config.label || this.fieldschema.get('label');
   }
 
   get config() {
