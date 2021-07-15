@@ -6,6 +6,10 @@ module.exports = class ItemEntityType extends EntityTypeBase {
     return 'item';
   }
 
+  static get label() {
+    return 'Item';
+  }
+
   static defaultConfig() {
     return {};
   }

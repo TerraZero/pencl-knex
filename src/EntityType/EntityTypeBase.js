@@ -10,6 +10,11 @@ module.exports = class EntityTypeBase {
     throw new PenclGetterDefinitionError(this, 'type');
   }
 
+  /** @returns {string} */
+  static get label() {
+    throw new PenclGetterDefinitionError(this, 'label');
+  }
+
   static get table() {
     return 'entity__' + this.type;
   }
@@ -133,8 +138,16 @@ module.exports = class EntityTypeBase {
     return this.entityschema.get('entity');
   }
 
+  get label() {
+    return this.definition.label;
+  }
+
   get bundle() {
     return this.entityschema.get('bundle');
+  }
+
+  get bundlelabel() {
+    return this.entityschema.get('label');
   }
 
   get config() {

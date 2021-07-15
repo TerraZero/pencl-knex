@@ -91,11 +91,12 @@ module.exports = class SchemaManager {
   /**
    * @param {string} entity entity name
    * @param {string} bundle bundle name
+   * @param {string} label bundle label
    * @param {Object} config bundle config
    * @param {Object<string, Object>} fields field instances config
    * @returns {import('./EntityType/EntityTypeBase')}
    */
-  createEntity(entity, bundle, config, fields) {
+  createEntity(entity, bundle, label, config, fields) {
     const testschema = this.getSchema('entity', entity + '.' + bundle);
     if (testschema !== undefined) {
       throw new SchemaError('The entity schema "' + entity + '.' + bundle + '" exists already.');
@@ -108,6 +109,7 @@ module.exports = class SchemaManager {
     const schema = {
       entity,
       bundle,
+      label,
       config: Reflection.merge(this.getEntityType(entity).defaultConfig(), config),
       fields,
     };
@@ -133,10 +135,11 @@ module.exports = class SchemaManager {
 
   /**
    * @param {string} field field name
+   * @param {string} label field label
    * @param {string} type field type
    * @param {Object} config field config
    */
-  createField(field, type, config = {}) {
+  createField(field, label, type, config = {}) {
     const testschema = this.getSchema('field', field);
 
     if (testschema !== undefined) {
@@ -146,6 +149,7 @@ module.exports = class SchemaManager {
     const collector = new ErrorCollector();
     const schema = {
       field,
+      label,
       type,
       config: Reflection.mergeValid(this.getFieldType(type).defaultConfig(), (valid, object, field) => {
         collector.error('The config "' + field + '" on field type "' + type + '" is not permitted.');

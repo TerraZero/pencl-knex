@@ -183,6 +183,10 @@ module.exports = class FieldTypeBase {
     return this.fieldschema.get('field');
   }
 
+  get label() {
+    return this.fieldschema.get('label');
+  }
+
   get config() {
     return this.entityschema.get('fields.' + this.field);
   }
