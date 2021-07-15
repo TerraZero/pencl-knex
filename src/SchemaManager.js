@@ -77,6 +77,9 @@ module.exports = class SchemaManager {
     return this.schemas['schema.' + type + '.' + name];
   }
 
+  /**
+   * @returns {Schema[]}
+   */
   getEntities() {
     const entities = [];
 
@@ -86,6 +89,20 @@ module.exports = class SchemaManager {
       }
     }
     return entities;
+  }
+
+  /**
+   * @returns {Schema[]}
+   */
+  getFields() {
+    const fields = [];
+
+    for (const name in this.schemas) {
+      if (this.schemas[name].type === 'field') {
+        fields.push(this.schemas[name]);
+      }
+    }
+    return fields;
   }
 
   /**
