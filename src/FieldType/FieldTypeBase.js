@@ -201,7 +201,7 @@ module.exports = class FieldTypeBase {
   get props() {
     if (this._props === undefined) {
       this._props = {};
-      this.definition.properties(this, this._props);
+      this.definition.properties(this.fieldschema, this._props);
     }
     return this._props;
   }
