@@ -4,7 +4,7 @@ const PropertyBase = require('./PropertyBase');
 module.exports = class StringProperty extends PropertyBase {
 
   /** @returns {string} */
-  static type() {
+  static get type() {
     return 'string';
   }
 

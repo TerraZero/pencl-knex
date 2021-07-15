@@ -5,7 +5,7 @@ const StringProperty = require('./StringProperty');
 module.exports = class ListProperty extends StringProperty {
 
   /** @returns {string} */
-  static type() {
+  static get type() {
     return 'list';
   }
 

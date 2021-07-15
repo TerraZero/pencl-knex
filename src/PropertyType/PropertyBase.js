@@ -4,7 +4,7 @@ const PenclMethodDefinitionError = require('pencl-kit/src/Error/Definition/Pencl
 module.exports = class PropertyBase {
 
   /** @returns {string} */
-  static type() {
+  static get type() {
     throw new PenclGetterDefinitionError(this, 'type');
   }
 
