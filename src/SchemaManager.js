@@ -79,7 +79,7 @@ module.exports = class SchemaManager {
 
   /**
    * @returns {Schema[]}
-   */
+   */ 
   getEntities() {
     const entities = [];
 
