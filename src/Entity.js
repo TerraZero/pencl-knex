@@ -42,6 +42,7 @@ module.exports = class Entity {
   setData(data) {
     if (data === null) return this;
     for (const property in data) {
+      if (['entity', 'bundle', 'id'].includes(property)) continue;
       if (Array.isArray(data[property])) {
         this.sets(property, data[property], (typeof data[property] === 'object' ? null : FieldTypeBase.DEFAULT_PROPERTY));
       } else {
