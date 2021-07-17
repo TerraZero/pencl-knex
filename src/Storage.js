@@ -136,4 +136,20 @@ module.exports = class Storage {
     return entity;
   }
 
+  /**
+   * @param {Entity} entity 
+   */
+  async delete(entity) {
+    for (const field of entity.getFields()) {
+      const fieldschema = entity.schema.getField(field);
+      await this.plugin.connection()(fieldschema.table)
+        .where('entity', entity.schema.entity)
+        .where('id', entity.id)
+        .del();
+    }
+    return this.plugin.connection()(entity.schema.table)
+      .where('id', entity.id)
+      .del();
+  }
+
 }
