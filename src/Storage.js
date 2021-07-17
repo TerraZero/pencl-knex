@@ -63,6 +63,7 @@ module.exports = class Storage {
    * @returns {Entity}
    */
   async loadFields(entity, ...fields) {
+    if (fields[0] === '[all]') fields = entity.getFields();
     for (const field of fields) {
       if (entity.isLoaded(field)) continue;
       const fieldschema = this.plugin.schemas.getField(entity.schema.entity, entity.schema.bundle, field);

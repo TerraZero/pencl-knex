@@ -94,6 +94,13 @@ module.exports = class Entity {
   }
 
   /**
+   * @returns {string[]}
+   */
+  getFields() {
+    return this.schema.getFields();
+  }
+
+  /**
    * @param {string} field 
    * @param {*} value
    * @param {int} delta

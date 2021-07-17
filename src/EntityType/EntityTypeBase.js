@@ -169,6 +169,9 @@ module.exports = class EntityTypeBase {
     return this._props;
   }
 
+  /**
+   * @returns {string[]}
+   */
   getFields() {
     const fields = [];
 

@@ -31,7 +31,7 @@ module.exports = class PenclKnex extends PenclPlugin {
     this._connections = {};
     this._env = this.config.env;
     this._schemas = null;
-    this.storage = new Storage(this);
+    this._storage = new Storage(this);
 
     this.config.data = require(this.boot.getPath(this.config.file));
   }
@@ -47,6 +47,11 @@ module.exports = class PenclKnex extends PenclPlugin {
       this.boot.triggerSync('knex.init.schema', this, this._schemas);
     }
     return this._schemas;
+  }
+
+  /** @returns {Storage} */
+  get storage() {
+    return this._storage;
   }
 
   /** @returns {Knex} */
