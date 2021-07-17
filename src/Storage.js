@@ -79,7 +79,7 @@ module.exports = class Storage {
         const value = fieldschema.definition.dbRowLoad(entity, fieldschema, {}, row, fielddata[row]);
 
         try {
-          entity.set(field, value, delta, null);
+          entity.set(field, value, delta++, null);
         } catch (e) {
           if (e instanceof StorageError) {
             // ignore StorageError by loading
@@ -104,7 +104,7 @@ module.exports = class Storage {
       .onConflict('id')
       .merge()
       .then((ids) => {
-        if (ids[0] !== 0) {
+        if (ids[0] !== 0 && entity.isNew()) {
           entity.set('id', ids[0]);
           this._entities[entity.schema.entity] = this._entities[entity.schema.entity] || {};
           this._entities[entity.schema.entity][entity.id] = entity;
