@@ -20,7 +20,7 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {import('knex')} knex 
+   * @param {import('knex').Knex} knex 
    * @param {import('../Schema')} fieldschema 
    * @returns {Promise}
    */
@@ -29,7 +29,7 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {import('knex')} knex 
+   * @param {import('knex').Knex} knex 
    * @param {import('../Schema')} fieldschema 
    * @returns {Promise}
    */
@@ -48,7 +48,7 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {import('knex')} table 
+   * @param {import('knex').Knex.TableBuilder} table 
    * @param {import('../Schema')} fieldschema 
    */
   static dbCreateProperties(table, fieldschema) {
@@ -83,7 +83,7 @@ module.exports = class FieldTypeBase {
    * @param {import('../Entity')} entity
    * @param {FieldTypeBase} field
    * @param {*} value
-   * @param {int} delta
+   * @param {number} delta
    * @param {Object} row
    * @returns {Object}
    */
@@ -98,7 +98,7 @@ module.exports = class FieldTypeBase {
    * @param {import('../Entity')} entity
    * @param {FieldTypeBase} field
    * @param {*} value
-   * @param {int} delta
+   * @param {number} delta
    * @param {Object} row
    * @returns {Object}
    */

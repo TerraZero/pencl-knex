@@ -19,7 +19,7 @@ module.exports = class PropertyBase {
 
   /**
    * @param {PropertyBase} property
-   * @param {import('knex')} table
+   * @param {import('knex').Knex.TableBuilder} table
    */
   static dbCreateField(property, table) {
     throw new PenclMethodDefinitionError(this, 'dbCreateField');
@@ -60,7 +60,7 @@ module.exports = class PropertyBase {
   }
 
   /**
-   * @param {import('knex')} table
+   * @param {import('knex').Knex.TableBuilder} table
    */
   dbCreateField(table) {
     this.definition.dbCreateField(this, table);

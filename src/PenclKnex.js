@@ -1,6 +1,7 @@
 const Knex = require('knex');
 
 const PenclPlugin = require('pencl-core/src/Boot/PenclPlugin');
+const Fetcher = require('./Fetcher');
 const SchemaManager = require('./SchemaManager');
 const Storage = require('./Storage');
 
@@ -55,13 +56,31 @@ module.exports = class PenclKnex extends PenclPlugin {
     return this._storage;
   }
 
-  /** @returns {Knex} */
+  /** 
+   * @param {string} env
+   * @returns {import('knex').Knex.QueryBuilder} 
+   */
   connection(env = null) {
     env = env || this._env;
     if (!this._connections[env]) {
       this._connections[env] = Knex(this.config.data[env]);
     }
     return this._connections[env];
+  }
+
+  /**
+   * @callback CB_QueryFactory
+   * @param {import('knex').Knex.QueryBuilder} connection
+   * @returns {Promise}
+   */
+
+  /**
+   * @param {CB_QueryFactory} factory 
+   * @param {string} env
+   * @returns {Fetcher}
+   */
+  async query(factory, env = null) {
+    return new Fetcher(await factory(this.connection(env)));
   }
 
   /**
@@ -75,10 +94,14 @@ module.exports = class PenclKnex extends PenclPlugin {
     return old;
   }
 
+  /**
+   * @param {string} env 
+   * @param {CallableFunction} callback 
+   * @returns 
+   */
   execute(env, callback) {
     const old = this.setEnv(env);
     const answer = callback();
-    
     this.setEnv(old);
     return answer;
   }

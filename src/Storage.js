@@ -42,7 +42,7 @@ module.exports = class Storage {
 
   /**
    * @param {string} entity 
-   * @param {int} id 
+   * @param {number} id 
    * @returns {this}
    */
   flush(entity, id) {
@@ -52,8 +52,8 @@ module.exports = class Storage {
 
   /**
    * @param {string} entity
-   * @param {Object<string, (string|int|boolean)>} conditions 
-   * @returns {int[]}
+   * @param {Object<string, (string|number|boolean)>} conditions 
+   * @returns {number[]}
    */
   async find(entity, conditions) {
     const type = this.plugin.schemas.getEntityType(entity);
@@ -82,7 +82,7 @@ module.exports = class Storage {
 
   /**
    * @param {string} entity 
-   * @param {int[]} ids 
+   * @param {number[]} ids 
    * @param  {...string} fields 
    * @returns {Entity[]}
    */
@@ -104,7 +104,7 @@ module.exports = class Storage {
 
   /**
    * @param {string} entity 
-   * @param {int} id 
+   * @param {number} id 
    * @param {...string} fields
    * @returns {Entity}
    */

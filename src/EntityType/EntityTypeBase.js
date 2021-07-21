@@ -20,7 +20,7 @@ module.exports = class EntityTypeBase {
   }
 
   /**
-   * @param {import('knex')} knex 
+   * @param {import('knex').Knex} knex 
    * @param {EntityTypeBase} entity 
    * @returns {Promise}
    */
@@ -29,7 +29,7 @@ module.exports = class EntityTypeBase {
   }
 
   /**
-   * @param {import('knex')} knex 
+   * @param {import('knex').Knex} knex 
    * @param {EntityTypeBase} entity 
    * @returns {Promise}
    */
@@ -48,7 +48,7 @@ module.exports = class EntityTypeBase {
   }
 
   /**
-   * @param {import('knex')} table 
+   * @param {import('knex').Knex.TableBuilder} table 
    * @param {EntityTypeBase} entity 
    */
   static dbProperties(table, entity) {
