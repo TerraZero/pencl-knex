@@ -42,6 +42,7 @@ module.exports = class PenclKnex extends PenclPlugin {
       this._schemas = new SchemaManager(this);
       this._schemas.addEntityType(require('./EntityType/NodeEntityType'));
       this._schemas.addEntityType(require('./EntityType/ItemEntityType'));
+      this._schemas.addEntityType(require('./EntityType/FileEntityType'));
       this._schemas.addFieldType(require('./FieldType/StringFieldType'));
       this._schemas.addFieldType(require('./FieldType/ReferenceFieldType'));
       this.boot.triggerSync('knex.init.schema', this, this._schemas);
