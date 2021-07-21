@@ -24,6 +24,7 @@ module.exports = class FileEntityType extends EntityTypeBase {
     props.label = StringProperty.create('label').length(1024);
     props.name = StringProperty.create('name').length(255);
     props.path = StringProperty.create('path').length(1024);
+    props.size = IntegerProperty.create('size');
     props.status = IntegerProperty.create('status');
   }
 
