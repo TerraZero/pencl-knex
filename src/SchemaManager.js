@@ -54,6 +54,16 @@ module.exports = class SchemaManager {
   }
 
   /**
+   * @param {string} field 
+   * @returns {typeof import('./FieldType/FieldTypeBase')}
+   */
+  getTypeOfField(field) {
+    const fieldschema = this.getSchema('field', field);
+
+    return this.getFieldType(fieldschema.get('type'));
+  }
+
+  /**
    * @param {typeof import('./EntityType/EntityTypeBase')} entitytype 
    */
   addEntityType(entitytype) {

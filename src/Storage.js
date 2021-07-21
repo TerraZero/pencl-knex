@@ -4,6 +4,10 @@ const Fetcher = require('./Fetcher');
 
 module.exports = class Storage {
 
+  static get LOADALLENTITIES() {
+    return null;
+  }
+
   static get LOADALLFIELDS() {
     return '[all]';
   }
@@ -14,6 +18,10 @@ module.exports = class Storage {
   constructor(plugin) {
     this.plugin = plugin;
     this._entities = {};
+  }
+
+  get LOADALLENTITIES() {
+    return null;
   }
 
   get LOADALLFIELDS() {
@@ -44,21 +52,20 @@ module.exports = class Storage {
 
   /**
    * @param {string} entity
-   * @param {string} bundle
    * @param {Object<string, (string|int|boolean)>} conditions 
    * @returns {int[]}
    */
-  async find(entity, bundle, conditions) {
-    const type = this.plugin.schemas.getEntity(entity, bundle);
+  async find(entity, conditions) {
+    const type = this.plugin.schemas.getEntityType(entity);
     const select = this.plugin.connection().select(type.table + '.id').from(type.table);
 
     for (const field in conditions) {
       if (field.startsWith('field.')) {
         const [ key, name, prop ] = field.split('.');
-        const fieldtype = type.getField(name);
+        const fieldtype = this.plugin.schemas.getTypeOfField(name);
 
         const table = {};
-        table['field_' + name] = fieldtype.table;
+        table['field_' + name] = fieldtype.dbTableName(this.plugin.schemas.getSchema('field', name));
         const on = {};
         on[type.table + '.entity'] = 'field_' + name + '.entity';
         on[type.table + '.id'] = 'field_' + name + '.id';
@@ -79,10 +86,10 @@ module.exports = class Storage {
    * @param  {...string} fields 
    * @returns {Entity[]}
    */
-  async loadMultiple(entity, ids = null, ...fields) {
+  async loadMultiple(entity, ids = Storage.LOADALLENTITIES, ...fields) {
     const loads = [];
 
-    if (ids === null) {
+    if (ids === Storage.LOADALLENTITIES) {
       const type = this.plugin.schemas.getEntityType(entity);
 
       const fetcher = new Fetcher(await this.plugin.connection().select('id').from(type.table));
