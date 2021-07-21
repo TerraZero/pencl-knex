@@ -1,7 +1,12 @@
 const Entity = require('./Entity');
 const StorageError = require('./Error/StorageError');
+const Fetcher = require('./Fetcher');
 
 module.exports = class Storage {
+
+  static get LOADALLFIELDS() {
+    return '[all]';
+  }
 
   /**
    * @param {import('./PenclKnex')} plugin 
@@ -9,6 +14,10 @@ module.exports = class Storage {
   constructor(plugin) {
     this.plugin = plugin;
     this._entities = {};
+  }
+
+  get LOADALLFIELDS() {
+    return this.constructor.LOADALLFIELDS;
   }
 
   /**
@@ -34,9 +43,62 @@ module.exports = class Storage {
   }
 
   /**
+   * @param {string} entity
+   * @param {string} bundle
+   * @param {Object<string, (string|int|boolean)>} conditions 
+   * @returns {int[]}
+   */
+  async find(entity, bundle, conditions) {
+    const type = this.plugin.schemas.getEntity(entity, bundle);
+    const select = this.plugin.connection().select(type.table + '.id').from(type.table);
+
+    for (const field in conditions) {
+      if (field.startsWith('field.')) {
+        const [ key, name, prop ] = field.split('.');
+        const fieldtype = type.getField(name);
+
+        const table = {};
+        table['field_' + name] = fieldtype.table;
+        const on = {};
+        on[type.table + '.entity'] = 'field_' + name + '.entity';
+        on[type.table + '.id'] = 'field_' + name + '.id';
+
+        select.leftJoin(table, on);
+        select.where('field_' + name + '.' + prop, '=', conditions[field]);
+      } else {
+        select.where(field, '=', conditions[field]);
+      }
+    }
+    const fetcher = new Fetcher(await select);
+    return fetcher.getFields('id');
+  }
+
+  /**
+   * @param {string} entity 
+   * @param {int[]} ids 
+   * @param  {...string} fields 
+   * @returns {Entity[]}
+   */
+  async loadMultiple(entity, ids = null, ...fields) {
+    const loads = [];
+
+    if (ids === null) {
+      const type = this.plugin.schemas.getEntityType(entity);
+
+      const fetcher = new Fetcher(await this.plugin.connection().select('id').from(type.table));
+      ids = fetcher.getFields('id');
+    }
+
+    for (const id of ids) {
+      loads.push(await this.load(entity, id, ...fields));
+    }
+    return loads;
+  }
+
+  /**
    * @param {string} entity 
    * @param {int} id 
-   * @param {string[]} fields
+   * @param {...string} fields
    * @returns {Entity}
    */
   async load(entity, id, ...fields) {
@@ -63,7 +125,7 @@ module.exports = class Storage {
    * @returns {Entity}
    */
   async loadFields(entity, ...fields) {
-    if (fields[0] === '[all]') fields = entity.getFields();
+    if (fields[0] === Storage.LOADALLFIELDS) fields = entity.getFields();
     for (const field of fields) {
       if (entity.isLoaded(field)) continue;
       const fieldschema = this.plugin.schemas.getField(entity.schema.entity, entity.schema.bundle, field);

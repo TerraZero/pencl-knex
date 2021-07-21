@@ -1,6 +1,6 @@
-const EntityTypeBase = require('pencl-knex/src/EntityType/EntityTypeBase');
-const StringProperty = require('pencl-knex/src/PropertyType/StringProperty');
-const IntegerProperty = require('pencl-knex/src/PropertyType/IntegerProperty');
+const EntityTypeBase = require('./EntityTypeBase');
+const StringProperty = require('../PropertyType/StringProperty');
+const IntegerProperty = require('../PropertyType/IntegerProperty');
 
 module.exports = class FileEntityType extends EntityTypeBase {
 
