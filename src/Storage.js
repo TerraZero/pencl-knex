@@ -52,7 +52,7 @@ module.exports = class Storage {
 
   /**
    * @param {string} entity
-   * @param {Object<string, (string|number|boolean)>} conditions 
+   * @param {Object<string, (string|number|boolean)>} conditions
    * @returns {number[]}
    */
   async find(entity, conditions) {
@@ -92,8 +92,7 @@ module.exports = class Storage {
     if (ids === Storage.LOADALLENTITIES) {
       const type = this.plugin.schemas.getEntityType(entity);
 
-      const fetcher = new Fetcher(await this.plugin.connection().select('id').from(type.table));
-      ids = fetcher.getFields('id');
+      ids = (await this.plugin.query(con => con.select('id').from(type.table))).getFields('id');
     }
 
     for (const id of ids) {
@@ -120,9 +119,9 @@ module.exports = class Storage {
       } else {
         this._entities[entity][id] = new Entity(this.plugin, this.plugin.schemas.getEntity(data[0].entity, data[0].bundle), data[0]);
       }
-
-      await this.loadFields(this._entities[entity][id], ...fields);
     }
+
+    await this.loadFields(this._entities[entity][id], ...fields);
     return this._entities[entity][id];
   }
 

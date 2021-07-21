@@ -97,7 +97,7 @@ module.exports = class PenclKnex extends PenclPlugin {
   /**
    * @param {string} env 
    * @param {CallableFunction} callback 
-   * @returns 
+   * @returns
    */
   execute(env, callback) {
     const old = this.setEnv(env);
