@@ -26,6 +26,13 @@ module.exports = class PropertyBase {
   }
 
   /**
+   * @param {PropertyBase} property
+   */
+  static getForm(property) {
+    throw new PenclMethodDefinitionError(this, 'getForm');
+  }
+
+  /**
    * @param {string} name 
    * @param {Object} config 
    */

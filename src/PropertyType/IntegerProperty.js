@@ -16,6 +16,13 @@ module.exports = class IntegerProperty extends PropertyBase {
     table.integer(property.dbField);
   }
 
+  /**
+   * @param {IntegerProperty} property
+   */
+  static getForm(property) {
+    return null;
+  }
+
   validate(value) {
     if (value + '' !== parseInt(value) + '') {
       throw new PropertyError('Value must be of type int or scalar', this, value);

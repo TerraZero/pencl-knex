@@ -19,6 +19,19 @@ module.exports = class ListProperty extends StringProperty {
   }
 
   /**
+   * @param {ListProperty} property
+   */
+  static getForm(property) {
+    return {
+      list: {
+        type: 'string',
+        label: 'List',
+        item_label: 'Item [count]',
+      },
+    };
+  }
+
+  /**
    * @param {(string[]|null)} list
    * @returns {(this|string[])}
    */

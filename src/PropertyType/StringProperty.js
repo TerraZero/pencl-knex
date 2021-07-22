@@ -17,11 +17,24 @@ module.exports = class StringProperty extends PropertyBase {
   }
 
   /**
+   * @param {StringProperty} property
+   */
+  static getForm(property) {
+    return {
+      length: {
+        type: 'string',
+        label: 'Length of table field',
+        fallback: property.length(),
+      },
+    };
+  }
+
+  /**
    * @param {(int|null)} length 
    * @returns {(this|int)}
    */
   length(length = null) {
-    if (length === null) return this.config.length;
+    if (length === null) return this.config.length || null;
     this.config.length = length;
     return this;
   }
