@@ -113,6 +113,26 @@ module.exports = class EntityTypeBase {
   }
 
   /**
+   * @param {*} form 
+   */
+  static formSchemaBundle(form) {
+    form.bundle = {
+      type: 'string',
+      label: 'Bundle Key',
+      mask: [
+        {
+          regex: '([^a-z]+)',
+          replace: '_',
+        }
+      ],
+    };
+    form.label = {
+      type: 'string',
+      label: 'Bundle Label',
+    };
+  }
+
+  /**
    * @param {import('../Schema')} entity entity schema
    */
   constructor(entity) {
