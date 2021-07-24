@@ -178,6 +178,7 @@ module.exports = class FieldTypeBase {
       type: 'number',
       label: 'Cardinality',
       description: 'Enter 0 for unlimit values.',
+      fallback: 1,
     };
   }
 
