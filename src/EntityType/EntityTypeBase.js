@@ -145,6 +145,7 @@ module.exports = class EntityTypeBase {
       form[field] = {
         type: 'group',
         label: fieldtype.label,
+        mount: 'fields.' + field,
         form: {},
       };
       fieldtype.definition.formSchemaField(form[field].form, config);
@@ -162,6 +163,7 @@ module.exports = class EntityTypeBase {
       form[field] = {
         type: 'group',
         label: fieldtype.label,
+        mount: 'fields.' + field,
         form: {},
       };
       fieldtype.definition.formInstanceField(form[field].form, config);
