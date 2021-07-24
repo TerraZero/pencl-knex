@@ -47,4 +47,33 @@ module.exports = class StringFieldType extends FieldTypeBase {
     return value;
   }
 
+  /**
+   * @param {Object} form 
+   * @param {Object} config
+   */
+  static formSchemaField(form, config) {
+    super.formSchemaField(form, config);
+    form.length = {
+      type: 'number',
+      min: 0,
+      label: 'String Length',
+      fallback: 255,
+      requireInit: true,
+    };
+  }
+
+  /**
+   * @param {Object} form 
+   * @param {Object} config
+   */
+  static formInstanceField(form, config) {
+    super.formInstanceField(form, config);
+    form.trim = {
+      type: 'string',
+      label: 'Trim',
+      description: 'Trim to much text with this string.',
+      fallback: ' ...',
+    };
+  }
+
 }

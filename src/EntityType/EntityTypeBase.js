@@ -113,9 +113,10 @@ module.exports = class EntityTypeBase {
   }
 
   /**
-   * @param {*} form 
+   * @param {Object} form 
+   * @param {Object} config
    */
-  static formSchemaBundle(form) {
+  static formSchemaBundle(form, config) {
     form.bundle = {
       type: 'string',
       label: 'Bundle Key',
@@ -125,11 +126,21 @@ module.exports = class EntityTypeBase {
           replace: '_',
         }
       ],
+      requireInit: true,
     };
     form.label = {
       type: 'string',
       label: 'Bundle Label',
     };
+  }
+
+  /**
+   * @param {EntityTypeBase} entity
+   * @param {Object} form 
+   * @param {Object} config
+   */
+  static formSchemaFields(entity, form, config) {
+
   }
 
   /**

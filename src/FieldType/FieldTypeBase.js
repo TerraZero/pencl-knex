@@ -143,6 +143,40 @@ module.exports = class FieldTypeBase {
   }
 
   /**
+   * @param {Object} form 
+   * @param {Object} config
+   */
+  static formSchemaField(form, config) {
+    form.key = {
+      type: 'string',
+      label: 'Field Key',
+      mask: [
+        {
+          regex: '([^a-z]+)',
+          replace: '_',
+        }
+      ],
+      requireInit: true,
+    };
+    form.label = {
+      type: 'string',
+      label: 'Field Label',
+    };
+  }
+
+  /**
+   * @param {Object} form 
+   * @param {Object} config
+   */
+  static formInstanceField(form, config) {
+    form.label = {
+      type: 'string',
+      label: 'Field Label (Override)',
+      fallback: null,
+    };
+  }
+
+  /**
    * @param {import('../Schema')} entity entity schema
    * @param {import('../Schema')} field field schema
    */
