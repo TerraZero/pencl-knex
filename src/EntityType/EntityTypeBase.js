@@ -140,7 +140,32 @@ module.exports = class EntityTypeBase {
    * @param {Object} config
    */
   static formSchemaFields(entity, form, config) {
+    for (const field of entity.getFields()) {
+      const fieldtype = entity.getField(field);
+      form[field] = {
+        type: 'group',
+        label: fieldtype.label,
+        form: {},
+      };
+      fieldtype.definition.formSchemaField(form[field].form, config);
+    }
+  }
 
+  /**
+   * @param {EntityTypeBase} entity
+   * @param {Object} form 
+   * @param {Object} config
+   */
+  static formInstanceFields(entity, form, config) {
+    for (const field of entity.getFields()) {
+      const fieldtype = entity.getField(field);
+      form[field] = {
+        type: 'group',
+        label: fieldtype.label,
+        form: {},
+      };
+      fieldtype.definition.formInstanceField(form[field].form, config);
+    }
   }
 
   /**
