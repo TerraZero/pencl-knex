@@ -174,6 +174,11 @@ module.exports = class FieldTypeBase {
       label: 'Field Label (Override)',
       fallback: null,
     };
+    form.cardinality = {
+      type: 'number',
+      label: 'Cardinality',
+      description: 'Enter 0 for unlimit values.',
+    };
   }
 
   /**

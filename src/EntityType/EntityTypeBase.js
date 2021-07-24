@@ -162,7 +162,7 @@ module.exports = class EntityTypeBase {
       const fieldtype = entity.getField(field);
       form[field] = {
         type: 'group',
-        label: fieldtype.label,
+        label: fieldtype.fieldschema.get('label'),
         mount: 'fields.' + field,
         form: {},
       };
