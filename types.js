@@ -16,6 +16,8 @@
  * @property {number} [min]
  * @property {number} [max]
  * @property {any} [fallback]
+ * @property {boolean} [open]
+ * @property {(number|string)} [grid]
  */
 
 /**

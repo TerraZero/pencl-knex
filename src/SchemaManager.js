@@ -224,6 +224,21 @@ module.exports = class SchemaManager {
   }
 
   /**
+   * @param {Schema} schema 
+   */
+  deleteSchema(schema) {
+    if (!schema.get('_type') || !schema.get('_name')) {
+      throw new Error('Schema has no required "_type" or "_name" value');
+    }
+
+    const path = Reflection.replaceObject(this.plugin.config.schema.types[schema.type], schema.placeholders, '');
+    const file = Path.join(this.plugin.boot.getPath(this.plugin.config.schema.path), path);
+
+    FS.unlinkSync(file);
+    delete this.schemas[schema.name];
+  }
+
+  /**
    * @param {string} entity 
    * @param {string} bundle 
    * @returns {import('./EntityType/EntityTypeBase')}
