@@ -145,7 +145,7 @@ module.exports = class FieldTypeBase {
 
   /**
    * @param {import('../../types').T_Form} form
-   * @param {Object} config
+   * @param {import('../../types').T_FormConfig} config
    */
   static formSchemaField(form, config) {
     form.key = {
@@ -153,7 +153,7 @@ module.exports = class FieldTypeBase {
       label: 'Field Key',
       mask: Types.MASK_ID,
       require: {
-        mode: 'init',
+        mode: 'create',
       },
     };
     form.label = {
@@ -164,16 +164,16 @@ module.exports = class FieldTypeBase {
 
   /**
    * @param {import('../../types').T_Form} form
-   * @param {Object} config
+   * @param {import('../../types').T_FormConfig} config
    */
   static formInstanceField(form, config) {
     form.label = {
       type: 'string',
       label: 'Field Label (Override)',
-      fallback: null,
     };
     form.cardinality = {
       type: 'number',
+      min: 0,
       label: 'Cardinality',
       description: 'Enter 0 for unlimit values.',
       fallback: 1,

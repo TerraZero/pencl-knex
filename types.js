@@ -30,6 +30,11 @@
  */
 
 /**
+ * @typedef {Object} T_FormConfig
+ * @property {string} [mode]
+ */
+
+/**
  * @typedef {Object} T_EntityData
  * @property {int} [id]
  * @property {string} [label]

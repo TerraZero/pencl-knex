@@ -1,3 +1,4 @@
+const Types = require('../../types');
 const PenclGetterDefinitionError = require('pencl-kit/src/Error/Definition/PenclGetterDefinitionError');
 const StringProperty = require('../PropertyType/StringProperty');
 
@@ -113,20 +114,17 @@ module.exports = class EntityTypeBase {
   }
 
   /**
-   * @param {Object} form 
-   * @param {Object} config
+   * @param {import('../../types').T_Form} form
+   * @param {import('../../types').T_FormConfig} config
    */
   static formSchemaBundle(form, config) {
     form.bundle = {
       type: 'string',
       label: 'Bundle Key',
-      mask: [
-        {
-          regex: '([^a-z]+)',
-          replace: '_',
-        }
-      ],
-      requireInit: true,
+      mask: Types.MASK_ID,
+      require: {
+        mode: 'create',
+      },
     };
     form.label = {
       type: 'string',
@@ -136,8 +134,8 @@ module.exports = class EntityTypeBase {
 
   /**
    * @param {EntityTypeBase} entity
-   * @param {Object} form 
-   * @param {Object} config
+   * @param {import('../../types').T_Form} form
+   * @param {import('../../types').T_FormConfig} config
    */
   static formSchemaFields(entity, form, config) {
     for (const field of entity.getFields()) {
@@ -154,8 +152,8 @@ module.exports = class EntityTypeBase {
 
   /**
    * @param {EntityTypeBase} entity
-   * @param {Object} form 
-   * @param {Object} config
+   * @param {import('../../types').T_Form} form
+   * @param {import('../../types').T_FormConfig} config
    */
   static formInstanceFields(entity, form, config) {
     for (const field of entity.getFields()) {

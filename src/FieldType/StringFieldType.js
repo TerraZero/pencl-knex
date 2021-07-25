@@ -49,7 +49,7 @@ module.exports = class StringFieldType extends FieldTypeBase {
 
   /**
    * @param {import('../../types').T_Form} form
-   * @param {Object} config
+   * @param {import('../../types').T_FormConfig} config
    */
   static formSchemaField(form, config) {
     super.formSchemaField(form, config);
@@ -59,14 +59,14 @@ module.exports = class StringFieldType extends FieldTypeBase {
       label: 'String Length',
       fallback: 255,
       require: {
-        mode: 'init',
+        mode: 'create',
       },
     };
   }
 
   /**
    * @param {import('../../types').T_Form} form
-   * @param {Object} config
+   * @param {import('../../types').T_FormConfig} config
    */
   static formInstanceField(form, config) {
     super.formInstanceField(form, config);
