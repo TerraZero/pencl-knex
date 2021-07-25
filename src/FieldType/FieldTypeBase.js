@@ -1,3 +1,4 @@
+const Types = require('../../types');
 const FieldError = require('../Error/FieldError');
 const PenclMethodDefinitionError = require('pencl-kit/src/Error/Definition/PenclMethodDefinitionError');
 const PenclGetterDefinitionError = require('pencl-kit/src/Error/Definition/PenclGetterDefinitionError');
@@ -143,20 +144,17 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {Object} form 
+   * @param {import('../../types').T_Form} form
    * @param {Object} config
    */
   static formSchemaField(form, config) {
     form.key = {
       type: 'string',
       label: 'Field Key',
-      mask: [
-        {
-          regex: '([^a-z]+)',
-          replace: '_',
-        }
-      ],
-      requireInit: true,
+      mask: Types.MASK_ID,
+      require: {
+        mode: 'init',
+      },
     };
     form.label = {
       type: 'string',
@@ -165,7 +163,7 @@ module.exports = class FieldTypeBase {
   }
 
   /**
-   * @param {Object} form 
+   * @param {import('../../types').T_Form} form
    * @param {Object} config
    */
   static formInstanceField(form, config) {

@@ -1,19 +1,12 @@
 const EntityError = require('./Error/EntityError');
 const FieldTypeBase = require('./FieldType/FieldTypeBase');
 
-/**
- * @typedef {Object} T_entitydata
- * @property {int} [id]
- * @property {string} [label]
- * @property {Object<string, Object>} [fields]
- */
-
 module.exports = class Entity {
 
   /**
    * @param {import('./PenclKnex')} plugin
    * @param {import('./EntityType/EntityTypeBase')} schema 
-   * @param {T_entitydata} data 
+   * @param {import('../types').T_EntityData} data 
    */
   constructor(plugin, schema, data = {}) {
     this.plugin = plugin;
@@ -36,7 +29,7 @@ module.exports = class Entity {
   }
 
   /**
-   * @param {T_entitydata} data 
+   * @param {import('../types').T_EntityData} data 
    * @returns {this}
    */
   setData(data) {
