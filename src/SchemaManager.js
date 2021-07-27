@@ -54,6 +54,13 @@ module.exports = class SchemaManager {
   }
 
   /**
+   * @returns {(typeof import('./FieldType/FieldTypeBase'))[]}
+   */
+  getFieldTypes() {
+    return this._fieldtypes;
+  }
+
+  /**
    * @param {string} field 
    * @returns {typeof import('./FieldType/FieldTypeBase')}
    */
@@ -221,6 +228,8 @@ module.exports = class SchemaManager {
     FileUtil.prepareDir(this.plugin.boot.root, file);
     FS.writeFileSync(file, JSON.stringify(schema.schema, null, '  '));
     this.schemas[schema.name] = schema;
+
+    this.plugin.handler.emit('schema.change', this, 'create', schema);
   }
 
   /**
@@ -236,6 +245,8 @@ module.exports = class SchemaManager {
 
     FS.unlinkSync(file);
     delete this.schemas[schema.name];
+
+    this.plugin.handler.emit('schema.change', this, 'delete', schema);
   }
 
   /**
