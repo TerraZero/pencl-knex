@@ -28,6 +28,22 @@ module.exports = class Entity {
     }
   }
 
+  get id() {
+    return this.data.id;
+  }
+
+  get schemadata() {
+    const schema = {
+      entity: this.schema.entityschema.data,
+      fields: {},
+    };
+    schema.entity.entitylabel = this.schema.definition.label;
+    for (const field of this._loadedFields) {
+      schema.fields[field] = this.schema.getField(field).fieldschema.data;
+    }
+    return schema;
+  }
+
   /**
    * @param {import('../types').T_EntityData} data 
    * @returns {this}
@@ -45,10 +61,6 @@ module.exports = class Entity {
       }
     }
     return this;
-  }
-
-  get id() {
-    return this.data.id;
   }
 
   isNew() {

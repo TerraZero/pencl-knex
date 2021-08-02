@@ -4,20 +4,29 @@
 
 /**
  * @typedef {Object} T_FormItem
- * @property {string} type
+ * @property {string} type =['group', 'text', 'number', 'select', 'radio', 'checkbox']
+ * @property {string} [component]
+ * @property {number} [cardinality]
+ * @property {any} [fallback]
  * @property {string} [label]
  * @property {(string|string[])} [description]
- * @property {number} [cardinality]
- * @property {T_FormMask[]} [mask]
+ * @property {(number|string)} [igrid]
+ * @property {number} [span]
  * @property {boolean} [disabled]
- * @property {T_FormRequire} [require]
- * @property {string} [mount]
- * @property {T_Form} [form]
- * @property {number} [min]
- * @property {number} [max]
- * @property {any} [fallback]
- * @property {boolean} [open]
- * @property {(number|string)} [grid]
+ * @property {string} [placeholder]
+ * @property {Object} [require]
+ * @property {string} [require.mode]
+ * @property {boolean} [open] type='group'
+ * @property {(number|string)} [grid] type='group'
+ * @property {T_Form} [form] type='group'
+ * @property {T_FormMask[]} [mask] type='text'
+ * @property {number} [min] type='number'
+ * @property {number} [max] type='number'
+ * @property {number} [step] type='number'
+ * @property {number} [precision] type='number'
+ * @property {Object<string, string>} [options] type=['select', 'radio']
+ * @property {boolean} [multiple] type='select'
+ * @property {boolean} [border] type='checkbox'
  */
 
 /**
@@ -38,7 +47,7 @@
 
 /**
  * @typedef {Object} T_EntityData
- * @property {int} [id]
+ * @property {number} [id]
  * @property {string} [label]
  * @property {Object<string, T_FieldInstanceData>} [fields]
  */
